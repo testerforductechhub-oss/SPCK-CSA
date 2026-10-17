@@ -35,11 +35,13 @@ try:
                 format="%.1f"
             )
 
-    st.write("---")
+        st.write("---")
     if st.button("Bắt đầu dự đoán", type="primary", use_container_width=True):
-        input_data = np.array([[user_inputs[f] for f in features_list]])
-        prediction = model.predict(input_data)[0]
+        input_df = pd.DataFrame([user_inputs])
+        input_df = input_df[features_list]
+        prediction = model.predict(input_df)[0]
         st.subheader("📌 Kết quả dự đoán:")
+
         
         if prediction <= 50:
             st.success(f"Chỉ số AQI dự kiến: {prediction:.2f} (Tốt - Không khí trong lành)")
