@@ -29,8 +29,6 @@ try:
                 step=0.1,
                 format="%.1f"
             )
-
-        st.write("---")
     if st.button("Bắt đầu dự đoán", type="primary", use_container_width=True):
         input_df = pd.DataFrame([user_inputs])
         input_df = input_df[features_list]
