@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 st.set_page_config(
     page_title="Dự đoán chỉ số AQI",
-    page_icon="🎋",
+    page_icon="🌍",
     layout="centered"
 )
 @st.cache_resource
@@ -14,14 +14,9 @@ def load_model():
 
 try:
     model = load_model()
-    if hasattr(model, "feature_names_in_"):
-        features_list = list(model.feature_names_in_)
-    else:
-        features_list = ['PM2.5', 'PM10', 'NO', 'NO2', 'NOx', 'NH3', 'CO', 'SO2', 'O3']
+    features_list = ['PM2.5', 'PM10', 'NO', 'NO2', 'NOx', 'NH3', 'CO', 'SO2', 'O3']
     st.title("Dự đoán chỉ số ô nhiễm môi trường đô thị(AQI)")
     st.markdown("Nhập các thông số nồng độ chất ô nhiễm để bắt đầu dự đoán.")
-    st.write("---")
-    st.subheader("Nhập thông số môi trường")
     col1, col2 = st.columns(2)
     user_inputs = {}
 
@@ -41,16 +36,19 @@ try:
         input_df = input_df[features_list]
         prediction = model.predict(input_df)[0]
         st.subheader("📌 Kết quả dự đoán:")
-
-        
         if prediction <= 50:
             st.success(f"Chỉ số AQI dự kiến: {prediction:.2f} (Tốt - Không khí trong lành)")
         elif prediction <= 100:
             st.info(f"Chỉ số AQI dự kiến: {prediction:.2f} (Vừa phải - Chấp nhận được)")
         elif prediction <= 150:
-            st.warning(f"Chỉ số AQI dự kiến: {prediction:.2f} (Kém - Nhạy cảm cần lưu ý)")
+            st.warning(f"Chỉ số AQI dự kiến: {prediction:.2f} (Kém - Không tốt cho nhóm nhạy cảm)")
+        elif prediction <= 200:
+            st.warning(f"Chỉ số AQI dự kiến: {prediction:.2f} (Không tốt - Có hại cho sức khỏe)")
+        elif prediction <= 300:
+            st.error(f"Chỉ số AQI dự kiến: {prediction:.2f} (Rất kém - Cảnh báo sức khỏe nghiêm trọng)")
         else:
-            st.error(f"Chỉ số AQI dự kiến: {prediction:.2f} (Nguy hiểm - Ô nhiễm nghiêm trọng)")
+            st.error(f"Chỉ số AQI dự kiến: {prediction:.2f} (Nguy hiểm - Tình trạng khẩn cấp)")
+
 
 except FileNotFoundError:
     st.error("Không tìm thấy file `model.pkl`.")
